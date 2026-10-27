@@ -1,0 +1,13 @@
+{
+	"admin/services/astra": {
+		"title": "Astra",
+		"action": {
+			"type": "view",
+			"path": "astra"
+		},
+		"depends": {
+			"acl": [ "luci-app-astra" ],
+			"uci": { "astra": true }
+		}
+	}
+}

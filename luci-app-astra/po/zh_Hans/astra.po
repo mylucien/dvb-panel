@@ -1,0 +1,34 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: zh_Hans\n"
+
+msgid "Astra"
+msgstr "Astra"
+
+msgid "Astra DVB/IPTV streaming panel. Channels, adapters and users are managed in the panel's own web interface; this page only controls the service."
+msgstr "Astra DVB/IPTV 流媒体面板。频道、适配器和用户请在面板自带的 Web 界面中管理，本页面仅控制服务。"
+
+msgid "Collecting data…"
+msgstr "收集数据中…"
+
+msgid "Enable"
+msgstr "启用"
+
+msgid "Listening port of the Astra web interface."
+msgstr "Astra Web 界面的监听端口。"
+
+msgid "NOT RUNNING"
+msgstr "未运行"
+
+msgid "Open Web Interface"
+msgstr "打开 Web 界面"
+
+msgid "RUNNING"
+msgstr "运行中"
+
+msgid "The DVB frontend is exclusive: disable this before using TVHeadend or MuMuDVB on the same adapter."
+msgstr "DVB 前端是独占的：在同一适配器上使用 TVHeadend 或 MuMuDVB 前请先关闭此项。"
+
+msgid "Web port"
+msgstr "Web 端口"

@@ -1,0 +1,32 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Astra"
+msgstr ""
+
+msgid "Astra DVB/IPTV streaming panel. Channels, adapters and users are managed in the panel's own web interface; this page only controls the service."
+msgstr ""
+
+msgid "Collecting data…"
+msgstr ""
+
+msgid "Enable"
+msgstr ""
+
+msgid "Listening port of the Astra web interface."
+msgstr ""
+
+msgid "NOT RUNNING"
+msgstr ""
+
+msgid "Open Web Interface"
+msgstr ""
+
+msgid "RUNNING"
+msgstr ""
+
+msgid "The DVB frontend is exclusive: disable this before using TVHeadend or MuMuDVB on the same adapter."
+msgstr ""
+
+msgid "Web port"
+msgstr ""

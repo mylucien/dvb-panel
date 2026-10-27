@@ -1,0 +1,14 @@
+{
+	"luci-app-astra": {
+		"description": "Grant access to Astra service control",
+		"read": {
+			"ubus": {
+				"service": [ "list" ]
+			},
+			"uci": [ "astra" ]
+		},
+		"write": {
+			"uci": [ "astra" ]
+		}
+	}
+}
