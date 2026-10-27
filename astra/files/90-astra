@@ -1,0 +1,15 @@
+#!/bin/sh
+# 首次启动（含恢复出厂设置）时执行一次：启用并拉起 astra 面板
+[ -x /etc/init.d/astra ] || exit 0
+
+/etc/init.d/astra enable
+
+# 迁移：早期手工装的 astra-panel 也占用 8000 端口，同时存在会抢端口
+if [ -x /etc/init.d/astra-panel ]; then
+	/etc/init.d/astra-panel stop >/dev/null 2>&1
+	/etc/init.d/astra-panel disable >/dev/null 2>&1
+fi
+
+/etc/init.d/astra running || /etc/init.d/astra start >/dev/null 2>&1 &
+
+exit 0

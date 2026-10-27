@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.so binary
+src/ld binary
+src/bin/astra binary

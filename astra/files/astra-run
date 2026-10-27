@@ -1,0 +1,22 @@
+#!/bin/sh
+# astra 5.63 启动器
+#
+# 运行时全是 32 位 ARM/bionic，私有放在 /usr/lib/astra：
+#   /usr/lib/astra/ld        bionic 链接器（astra 的 PT_INTERP 指向它）
+#   /usr/lib/astra/lib/*.so  整套 32 位库，不在 musl 的搜索路径里
+#
+# procd 会把固件环境的 LD_PRELOAD（64 位 musl 库）传进来，
+# 32 位 bionic 链接器加载它必然 abort，所以必须先清掉。
+
+unset LD_PRELOAD
+unset LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/lib/astra/lib
+
+[ -x /usr/lib/astra/bin/astra ] || {
+	echo "astra: 缺少 /usr/lib/astra/bin/astra" >&2
+	exit 1
+}
+
+cd /tmp || exit 1
+exec /usr/lib/astra/bin/astra --stream /etc/astra/panel.lua \
+	-c /etc/astra/astra.json -p "${1:-8000}"
