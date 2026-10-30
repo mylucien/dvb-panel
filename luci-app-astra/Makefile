@@ -13,3 +13,5 @@ PKG_LICENSE:=Apache-2.0
 PKG_MAINTAINER:=mylucien
 
 include $(TOPDIR)/feeds/luci/luci.mk
+
+# call BuildPackage - OpenWrt buildroot signature
