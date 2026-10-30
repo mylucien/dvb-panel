@@ -1,5 +1,8 @@
 include $(TOPDIR)/rules.mk
 
+# 预编译的 32 位 ARM 运行时：目标工具链的 strip/patchelf 处理不了 ARM32 ELF
+RSTRIP:=:
+
 PKG_NAME:=astra
 PKG_VERSION:=5.63
 PKG_RELEASE:=1
@@ -23,6 +26,12 @@ define Package/astra/description
  Astra 5.63 streaming/control panel with its own private 32-bit ARM
  (bionic) runtime under /usr/lib/astra. Ships no kernel modules and no
  LuCI integration; service is controlled by /etc/config/astra.
+endef
+
+# bionic 的 libdl 符号在 libc 里，libdl.so 只是空壳，不需要也不该打包；
+# 但 astra 的 DT_NEEDED 里有它，这里声明一下让打包期的依赖校验通过
+define Package/astra/extra_provides
+	echo "libdl.so";
 endef
 
 define Package/astra/conffiles
