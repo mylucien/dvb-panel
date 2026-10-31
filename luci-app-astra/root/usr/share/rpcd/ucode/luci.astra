@@ -1,0 +1,301 @@
+// SPDX-License-Identifier: Apache-2.0
+//
+// rpcd plugin "luci.astra": the backend of luci-app-astra.
+//
+//   getStatus    service / API / monitor health
+//   getState     live adapter + stream state and new log lines (monitor output)
+//   control      guarded proxy for astra's /control/ commands
+//   getDvbList   DVB frontends present in the kernel (independent of
+//                `astra --dvbls`, which is empty on this hardware)
+//
+// Credentials never reach the browser: they live in /etc/astra/api.key
+// (root only) and are applied here.
+
+'use strict';
+
+import { readfile, lsdir, readlink, realpath, access, dirname } from 'fs';
+import { cursor } from 'uci';
+import { read_key, control, parse_json, find_pid, STATE_FILE, DEFAULT_PORT } from 'astra.api';
+
+const CMD_RE = /^[a-z][a-z0-9-]{0,40}$/;
+
+/*
+ * astra does not validate its command arguments: a missing or wrongly typed
+ * argument raises a Lua PANIC that aborts the whole process (measured against
+ * astra 5.63). Every command below crashed it; the arguments are therefore
+ * checked here before anything is forwarded. 'any' = present, any type.
+ */
+const REQUIRE = {
+	'set-adapter':     { id: 'string', adapter: 'object' },
+	'set-stream':      { id: 'string', stream: 'object' },
+	'set-config':      { key: 'string' },
+	'set-settings':    { settings: 'object' },
+	'set-log':         { set: 'object' },
+	'restart-adapter': { id: 'string' },
+	'restart-stream':  { id: 'string' },
+	'close-session':   { id: 'any' },
+	'import':          { data: 'string' },
+	'upload':          { config: 'object' }
+};
+
+/* commands that only read; reachable with the read-only ACL via "query" */
+const READ_CMDS = { status: true, version: true, load: true, log: true, sessions: true };
+
+/*
+ * Commands forwarded at all. astra panics (Lua PANIC -> SIGABRT) when a
+ * command that needs arguments gets none, and an unknown command is answered
+ * with silence, so the switchboard is a whitelist: anything not listed here
+ * never reaches the control interface.
+ */
+const ALLOWED = {
+	status: true, version: true, load: true, log: true, sessions: true, restart: true,
+	'set-adapter': true, 'set-stream': true, 'set-settings': true, 'set-config': true,
+	'set-log': true, 'restart-adapter': true, 'restart-stream': true,
+	'close-session': true, import: true, upload: true
+};
+
+/* returns an error string, or null when the arguments are acceptable */
+function check_args(cmd, args) {
+	let req = REQUIRE[cmd];
+
+	if (!req)
+		return null;
+
+	for (let name, want in req) {
+		let v = args[name];
+
+		if (v == null)
+			return 'missing argument "' + name + '"';
+
+		if (want != 'any' && type(v) != want)
+			return 'argument "' + name + '" must be ' + want;
+	}
+
+	return null;
+}
+
+function get_port() {
+	let p = +(cursor().get('astra', 'main', 'port') ?? DEFAULT_PORT);
+
+	return (p > 0 && p < 65536) ? p : DEFAULT_PORT;
+}
+
+function read_state() {
+	return parse_json(readfile(STATE_FILE));
+}
+
+/* adapters currently configured, straight from astra (no cache) */
+function configured_adapters(port, key) {
+	let r = control(port, 'load', null, key, 3000);
+
+	if (!r.ok || type(r.data) != 'object')
+		return null;
+
+	let ids = {};
+
+	for (let a in (r.data.dvb_tune ?? []))
+		if (type(a) == 'object' && a.id != null)
+			ids[a.id] = true;
+
+	return ids;
+}
+
+/*
+ * USB device directory of a frontend. Drivers differ: some register the dvb
+ * class per interface ("1-1:1.0/dvb/..."), others directly below the USB
+ * device ("1-1/dvb/..."). Counting dirname() levels therefore landed on the
+ * root hub ("xHCI Host Controller") here. Use the "device" link instead and
+ * only walk up while the directory has no idVendor.
+ */
+function usb_device_dir(adapter, device) {
+	let dev = realpath(sprintf('/sys/class/dvb/dvb%d.frontend%d/device', adapter, device));
+
+	if (!dev)
+		return null;
+
+	if (access(dev + '/idVendor'))
+		return dev;
+
+	let up = dirname(dev);
+
+	return access(up + '/idVendor') ? up : null;
+}
+
+function dvb_nodes() {
+	let out = [];
+
+	for (let a in (lsdir('/dev/dvb') ?? [])) {
+		let am = match(a, /^adapter([0-9]+)$/);
+
+		if (!am)
+			continue;
+
+		let adapter = +am[1], files = lsdir('/dev/dvb/' + a) ?? [];
+
+		for (let f in files) {
+			let fm = match(f, /^frontend([0-9]+)$/);
+
+			if (!fm)
+				continue;
+
+			let device = +fm[1];
+			let node = {
+				adapter: adapter,
+				device: device,
+				path: '/dev/dvb/' + a + '/' + f,
+				has_demux: (index(files, 'demux' + device) >= 0),
+				has_dvr: (index(files, 'dvr' + device) >= 0),
+				name: null,
+				usb_id: null,
+				in_use: false
+			};
+
+			let dir = usb_device_dir(adapter, device);
+
+			if (dir) {
+				node.name = trim(readfile(dir + '/product') ?? '');
+				let v = trim(readfile(dir + '/idVendor') ?? ''), p = trim(readfile(dir + '/idProduct') ?? '');
+				node.usb_id = (v && p) ? v + ':' + p : null;
+			}
+
+			push(out, node);
+		}
+	}
+
+	/* which frontends does the running astra hold open? */
+	let pid = find_pid();
+
+	if (pid) {
+		for (let fd in (lsdir('/proc/' + pid + '/fd') ?? [])) {
+			let l = readlink('/proc/' + pid + '/fd/' + fd);
+
+			for (let n in out)
+				if (l == n.path)
+					n.in_use = true;
+		}
+	}
+
+	return out;
+}
+
+function run_control(cmd, args, read_only) {
+	if (type(cmd) != 'string' || !match(cmd, CMD_RE))
+		return { ok: false, error: 'invalid command' };
+
+	if (!ALLOWED[cmd] || (read_only && !READ_CMDS[cmd]))
+		return { ok: false, error: 'command not allowed' };
+
+	let port = get_port(), key = read_key();
+
+	if (!key)
+		return { ok: false, error: 'no-key' };
+
+	if (type(args) != 'object')
+		return { ok: false, error: 'invalid arguments' };
+
+	let bad = check_args(cmd, args);
+
+	if (bad)
+		return { ok: false, error: bad };
+
+	/*
+	 * astra aborts (Lua PANIC) on restart-adapter for an id that is not
+	 * in its configuration, taking the whole service down. Never forward
+	 * that; every other unknown id comes back as a normal error.
+	 */
+	if (cmd == 'restart-adapter') {
+		let ids = configured_adapters(port, key);
+
+		if (ids == null)
+			return { ok: false, error: 'cannot read configuration' };
+
+		if (type(args.id) != 'string' || !ids[args.id])
+			return { ok: false, error: 'adapter not configured' };
+	}
+
+	return control(port, cmd, args, key, (cmd == 'upload') ? 10000 : 4000);
+}
+
+const methods = {
+	getStatus: {
+		call: function() {
+			let port = get_port(), key = read_key(), pid = find_pid();
+			let res = {
+				running: (pid != null), pid: pid, port: port,
+				has_key: (key != null), api: null, version: null, monitor: null
+			};
+
+			if (pid && key) {
+				let r = control(port, 'status', null, key, 1500);
+
+				res.api = { ok: r.ok, error: r.error };
+
+				if (r.ok && type(r.data) == 'object') {
+					res.version = r.data.version;
+					res.ip_list = r.data.ip_list;
+				}
+			}
+
+			let st = read_state();
+
+			if (st)
+				res.monitor = { connected: st.connected, error: st.error, age: time() - st.ts, since: st.since };
+
+			return res;
+		}
+	},
+
+	getState: {
+		args: { log_since: 0 },
+		call: function(request) {
+			let st = read_state();
+
+			if (!st)
+				return { available: false, connected: false, adapters: {}, streams: {}, log: [], seq: 0 };
+
+			let since = +request.args.log_since || 0;
+
+			if (since < 0) {
+				/* caller does not want the log (e.g. the overview page) */
+				st.log = [];
+			}
+			else {
+				/* monitor restarted: its sequence numbers start over */
+				if (since > st.seq)
+					since = 0;
+
+				st.log = filter(st.log ?? [], l => l.seq > since);
+			}
+
+			st.available = true;
+			st.age = time() - st.ts;
+
+			return st;
+		}
+	},
+
+	control: {
+		args: { cmd: 'status', args: {} },
+		call: function(request) {
+			return run_control(request.args.cmd, request.args.args ?? {}, false);
+		}
+	},
+
+	query: {
+		args: { cmd: 'status', args: {} },
+		call: function(request) {
+			return run_control(request.args.cmd, request.args.args ?? {}, true);
+		}
+	},
+
+	getDvbList: {
+		call: function() {
+			return {
+				driver: !!access('/sys/module/dvb_core'),
+				nodes: dvb_nodes()
+			};
+		}
+	}
+};
+
+return { 'luci.astra': methods };

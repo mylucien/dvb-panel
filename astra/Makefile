@@ -1,11 +1,11 @@
 include $(TOPDIR)/rules.mk
 
-# 预编译的 32 位 ARM 运行时：目标工具链的 strip/patchelf 处理不了 ARM32 ELF
+# 预编译 32 位 ARM 运行时：aarch64 工具链的 strip/patchelf 处理不了 ARM32 ELF
 RSTRIP:=:
 
 PKG_NAME:=astra
 PKG_VERSION:=5.63
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_LICENSE:=Proprietary
 PKG_MAINTAINER:=mylucien
@@ -17,26 +17,28 @@ include $(INCLUDE_DIR)/package.mk
 define Package/astra
   SECTION:=net
   CATEGORY:=Network
-  TITLE:=Astra DVB/IPTV streaming panel (prebuilt 32-bit ARM runtime)
+  TITLE:=Astra DVB/IPTV streaming server (prebuilt 32-bit ARM runtime)
   URL:=https://github.com/mylucien/dvb-panel
-  DEPENDS:=
+  DEPENDS:=+ucode +ucode-mod-fs
 endef
 
 define Package/astra/description
- Astra 5.63 streaming/control panel with its own private 32-bit ARM
- (bionic) runtime under /usr/lib/astra. Ships no kernel modules and no
- LuCI integration; service is controlled by /etc/config/astra.
-endef
-
-# bionic 的 libdl 符号在 libc 里，libdl.so 只是空壳，不需要也不该打包；
-# 但 astra 的 DT_NEEDED 里有它，这里声明一下让打包期的依赖校验通过
-define Package/astra/extra_provides
-	echo "libdl.so";
+ Astra 5.63 streaming server with its own private 32-bit ARM (bionic)
+ runtime under /usr/lib/astra. It is managed through luci-app-astra, which
+ replaces the built-in web panel; only the authenticated control interface
+ remains. Ships no kernel modules. The service is controlled by
+ /etc/config/astra.
 endef
 
 define Package/astra/conffiles
 /etc/astra/astra.json
 /etc/config/astra
+endef
+
+# bionic 的 libdl 符号在 libc 里，libdl.so 只是空壳不该打包，
+# 但 astra 的 DT_NEEDED 里有它，声明一下让打包期依赖校验通过
+define Package/astra/extra_provides
+	echo "libdl.so";
 endef
 
 define Package/astra/postinst
@@ -81,12 +83,6 @@ define Package/astra/install
 	$(LN) libdvbcsa.so.1.0.1 $(1)/usr/lib/astra/lib/libdvbcsa.so.1
 	$(LN) libdvbcsa.so.1.0.1 $(1)/usr/lib/astra/lib/libdvbcsa.so
 
-	# 面板静态资源（二进制里 http_static 根目录硬编码为 /vendor）
-	$(INSTALL_DIR) $(1)/vendor/static
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/static/app.js $(1)/vendor/static/app.js
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/static/app.css $(1)/vendor/static/app.css
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/static/mod.js $(1)/vendor/static/mod.js
-
 	# 配置与服务
 	$(INSTALL_DIR) $(1)/etc/astra
 	$(INSTALL_CONF) ./files/astra.json $(1)/etc/astra/astra.json
@@ -99,6 +95,8 @@ define Package/astra/install
 	$(INSTALL_BIN) ./files/90-astra $(1)/etc/uci-defaults/90-astra
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) ./files/astra-run $(1)/usr/bin/astra-run
+	$(INSTALL_DIR) $(1)/usr/libexec/astra
+	$(INSTALL_BIN) ./files/provision $(1)/usr/libexec/astra/provision
 endef
 
 $(eval $(call BuildPackage,astra))

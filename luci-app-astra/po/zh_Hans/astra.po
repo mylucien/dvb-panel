@@ -1,34 +1,1093 @@
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: luci-app-astra\n"
 "Language: zh_Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
+#: astra/lib.js:287
+msgid "Address is empty"
+msgstr "地址不能为空"
+
+#: astra/lib.js:292
+msgid "Invalid address"
+msgstr "地址无效"
+
+#: astra/lib.js:295
+msgid "Unsupported type \"%s\""
+msgstr "不支持的类型“%s”"
+
+#: astra/lib.js:405
+msgid "Authentication to astra failed. Restart the Astra service so it can re-provision its API key."
+msgstr "与 Astra 的认证失败。请重启 Astra 服务，让它重新生成 API 密钥。"
+
+#: astra/lib.js:407
+msgid "The API key does not exist yet. Start the Astra service once to create it."
+msgstr "API 密钥尚不存在。请先启动一次 Astra 服务以创建它。"
+
+#: astra/lib.js:409
+msgid "Astra is not running."
+msgstr "Astra 未在运行。"
+
+#: astra/lib.js:411
+msgid "Astra did not answer in time."
+msgstr "Astra 未在规定时间内响应。"
+
+#: astra/lib.js:413
+msgid "This adapter is not in the configuration."
+msgstr "该适配器不在配置中。"
+
+#: astra/lib.js:590
+msgid "This field is required"
+msgstr "此项必填"
+
+#: astra/lib.js:592
+msgid "Not a number"
+msgstr "不是数字"
+
+#: astra/lib.js:594
+msgid "Minimum is %s"
+msgstr "最小值为 %s"
+
+#: astra/lib.js:596
+msgid "Maximum is %s"
+msgstr "最大值为 %s"
+
+#: astra/lib.js:601
+msgid "Invalid value"
+msgstr "无效的值"
+
+#: view/astra/adapters.js:16 view/astra/adapters.js:21 view/astra/adapters.js:75
+msgid "Default: Auto"
+msgstr "默认：自动"
+
+#: view/astra/adapters.js:26
+msgid "Expected %s..%s %s"
+msgstr "应为 %s..%s %s"
+
+#: view/astra/adapters.js:177 view/astra/adapters.js:40 view/astra/streams.js:272
+msgid "Enabled"
+msgstr "启用"
+
+#: view/astra/adapters.js:177 view/astra/adapters.js:41 view/astra/overview.js:193
+msgid "Name"
+msgstr "名称"
+
+#: view/astra/adapters.js:41
+msgid "Adapter name"
+msgstr "适配器名称"
+
+#: view/astra/adapters.js:42 view/astra/streams.js:449
+msgid "ID"
+msgstr "ID"
+
+#: view/astra/adapters.js:44 view/astra/streams.js:116 view/astra/streams.js:62
+msgid "Adapter"
+msgstr "适配器"
+
+#: view/astra/adapters.js:177 view/astra/adapters.js:46 view/astra/overview.js:193
+msgid "Device"
+msgstr "设备"
+
+#: view/astra/adapters.js:177 view/astra/adapters.js:47 view/astra/streams.js:381
+msgid "Type"
+msgstr "类型"
+
+#: view/astra/adapters.js:52
+msgid "Transponder"
+msgstr "转发器"
+
+#: view/astra/adapters.js:53 view/astra/streams.js:118
+msgid "Frequency (MHz)"
+msgstr "频率（MHz）"
+
+#: view/astra/adapters.js:62
+msgid "Polarization"
+msgstr "极化"
+
+#: view/astra/adapters.js:63
+msgid "Vertical"
+msgstr "垂直"
+
+#: view/astra/adapters.js:63
+msgid "Horizontal"
+msgstr "水平"
+
+#: view/astra/adapters.js:63
+msgid "Right"
+msgstr "右旋"
+
+#: view/astra/adapters.js:63
+msgid "Left"
+msgstr "左旋"
+
+#: view/astra/adapters.js:64
+msgid "Symbol rate (kBd)"
+msgstr "符号率（kBd）"
+
+#: view/astra/adapters.js:67
+msgid "Advanced"
+msgstr "高级"
+
+#: view/astra/adapters.js:68 view/astra/streams.js:120
+msgid "Modulation"
+msgstr "调制方式"
+
+#: view/astra/adapters.js:69
+msgid "FEC"
+msgstr "FEC"
+
+#: view/astra/adapters.js:70
+msgid "Roll-off"
+msgstr "滚降系数"
+
+#: view/astra/adapters.js:71
+msgid "Default: 35"
+msgstr "默认：35"
+
+#: view/astra/adapters.js:72
+msgid "Stream ID / PLP ID"
+msgstr "流 ID / PLP ID"
+
+#: view/astra/adapters.js:72
+msgid "Multistream filtering"
+msgstr "多流过滤"
+
+#: view/astra/adapters.js:74
+msgid "Bandwidth"
+msgstr "带宽"
+
+#: view/astra/adapters.js:76
+msgid "Guard interval"
+msgstr "保护间隔"
+
+#: view/astra/adapters.js:78
+msgid "Transmission mode"
+msgstr "传输模式"
+
+#: view/astra/adapters.js:80
+msgid "Hierarchy"
+msgstr "层级"
+
+#: view/astra/adapters.js:83
+msgid "LNB"
+msgstr "LNB"
+
+#: view/astra/adapters.js:84
+msgid "Low sub-band"
+msgstr "低频段"
+
+#: view/astra/adapters.js:85
+msgid "High sub-band"
+msgstr "高频段"
+
+#: view/astra/adapters.js:86
+msgid "Sub-band range"
+msgstr "频段分界"
+
+#: view/astra/adapters.js:87
+msgid "LNB sharing"
+msgstr "LNB 共享"
+
+#: view/astra/adapters.js:87
+msgid "Disable LNB voltage supply and tone signal"
+msgstr "关闭 LNB 供电和 22kHz 音调信号"
+
+#: view/astra/adapters.js:88
+msgid "Force tone"
+msgstr "强制 22kHz 音调"
+
+#: view/astra/adapters.js:91
+msgid "DiSEqC mode"
+msgstr "DiSEqC 模式"
+
+#: view/astra/adapters.js:92
+msgid "Default: DiSEqC 1.0"
+msgstr "默认：DiSEqC 1.0"
+
+#: view/astra/adapters.js:92
+msgid "Tone burst"
+msgstr "Tone burst（音频突发）"
+
+#: view/astra/adapters.js:92
+msgid "DiSEqC command"
+msgstr "DiSEqC 命令"
+
+#: view/astra/adapters.js:93
+msgid "DiSEqC value"
+msgstr "DiSEqC 值"
+
+#: view/astra/adapters.js:94
+msgid "1..4 (DiSEqC 1.0), 1..16 (1.1), A/B (tone burst), or a raw command"
+msgstr "1..4（DiSEqC 1.0）、1..16（1.1）、A/B（Tone burst），或原始命令"
+
+#: view/astra/adapters.js:98
+msgid "Expected A or B"
+msgstr "应为 A 或 B"
+
+#: view/astra/adapters.js:105
+msgid "Unicable slot"
+msgstr "Unicable 通道"
+
+#: view/astra/adapters.js:106
+msgid "Default: unicable disabled"
+msgstr "默认：关闭 Unicable"
+
+#: view/astra/adapters.js:107
+msgid "Slot position"
+msgstr "通道位置"
+
+#: view/astra/adapters.js:109
+msgid "Slot frequency (MHz)"
+msgstr "通道频率（MHz）"
+
+#: view/astra/adapters.js:112
+msgid "Miscellaneous"
+msgstr "其它"
+
+#: view/astra/adapters.js:113 view/astra/streams.js:73
+msgid "Timeout"
+msgstr "超时"
+
+#: view/astra/adapters.js:113
+msgid "Seconds before checking DVR errors. Default: 2"
+msgstr "检查 DVR 错误前的等待秒数。默认：2"
+
+#: view/astra/adapters.js:114
+msgid "Bind adapter to the DigitalDevices CI"
+msgstr "将适配器绑定到 DigitalDevices CI"
+
+#: view/astra/adapters.js:115
+msgid "Budget mode"
+msgstr "预算模式"
+
+#: view/astra/adapters.js:115
+msgid "Disable hardware PID filtering"
+msgstr "关闭硬件 PID 过滤"
+
+#: view/astra/adapters.js:116
+msgid "Signal in dBm"
+msgstr "信号以 dBm 显示"
+
+#: view/astra/adapters.js:117
+msgid "CA delay"
+msgstr "CA 延迟"
+
+#: view/astra/adapters.js:117
+msgid "Delay before initialising the CA module. Default: 3"
+msgstr "初始化 CA 模块前的延迟。默认：3"
+
+#: view/astra/adapters.js:118
+msgid "DVR buffer size"
+msgstr "DVR 缓冲区大小"
+
+#: view/astra/adapters.js:118
+msgid "1..200. Default: not set"
+msgstr "1..200。默认：不设置"
+
+#: menu.d view/astra/adapters.js:154 view/astra/overview.js:66
+msgid "Adapters"
+msgstr "适配器"
+
+#: view/astra/adapters.js:155
+msgid "DVB tuners used as stream inputs. A stream refers to an adapter by its ID (dvb://<id>)."
+msgstr "用作流输入的 DVB 调谐器。流通过适配器 ID 引用它（dvb://<id>）。"
+
+#: view/astra/adapters.js:164
+msgid "No DVB device was found in /dev/dvb."
+msgstr "在 /dev/dvb 中没有找到 DVB 设备。"
+
+#: view/astra/adapters.js:166
+msgid "Detected: %s"
+msgstr "已检测到：%s"
+
+#: view/astra/adapters.js:177
+msgid "Frequency"
+msgstr "频率"
+
+#: view/astra/adapters.js:177
+msgid "Lock"
+msgstr "锁定"
+
+#: view/astra/adapters.js:177 view/astra/overview.js:220 view/astra/streams.js:381
+msgid "Bitrate"
+msgstr "码率"
+
+#: view/astra/adapters.js:193 view/astra/overview.js:202 view/astra/overview.js:203
+msgid "no"
+msgstr "否"
+
+#: view/astra/adapters.js:193 view/astra/overview.js:202 view/astra/overview.js:203
+msgid "yes"
+msgstr "是"
+
+#: view/astra/adapters.js:196 view/astra/streams.js:397
+msgid "Edit"
+msgstr "编辑"
+
+#: view/astra/adapters.js:201 view/astra/overview.js:104 view/astra/streams.js:399
+msgid "Restart"
+msgstr "重启"
+
+#: view/astra/adapters.js:203 view/astra/streams.js:401
+msgid "Delete"
+msgstr "删除"
+
+#: view/astra/adapters.js:211
+msgid "No adapters configured yet."
+msgstr "尚未配置适配器。"
+
+#: view/astra/adapters.js:213 view/astra/adapters.js:306
+msgid "Add adapter"
+msgstr "添加适配器"
+
+#: view/astra/adapters.js:295
+msgid "Adapter %d / device %d is already used by \"%s\". Save anyway?"
+msgstr "适配器 %d / 设备 %d 已被“%s”使用。仍要保存吗？"
+
+#: view/astra/adapters.js:302
+msgid "Adapter \"%s\" saved"
+msgstr "适配器“%s”已保存"
+
+#: view/astra/adapters.js:306
+msgid "Edit adapter"
+msgstr "编辑适配器"
+
+#: view/astra/adapters.js:309 view/astra/streams.js:541
+msgid "Cancel"
+msgstr "取消"
+
+#: view/astra/adapters.js:311 view/astra/streams.js:543
+msgid "Save"
+msgstr "保存"
+
+#: view/astra/adapters.js:318
+msgid "Adapter \"%s\" restarted"
+msgstr "适配器“%s”已重启"
+
+#: view/astra/adapters.js:332
+msgid "Delete adapter \"%s\"?"
+msgstr "删除适配器“%s”吗？"
+
+#: view/astra/adapters.js:335
+msgid "It is used as an input by: %s"
+msgstr "以下流把它用作输入：%s"
+
+#: view/astra/config.js:37
+msgid "Paste an Astra script or JSON export here"
+msgstr "在此粘贴 Astra 脚本或 JSON 导出内容"
+
+#: view/astra/config.js:60
+msgid "The configuration is %d bytes; the web interface can transfer at most %d. Copy /etc/astra/astra.json to the router instead."
+msgstr "配置大小为 %d 字节，网页界面最多只能传输 %d 字节。请改为直接复制 /etc/astra/astra.json 到路由器。"
+
+#: view/astra/config.js:92
+msgid "Nothing to import was found."
+msgstr "没有找到可导入的内容。"
+
+#: view/astra/config.js:94
+msgid "Import %d object(s) and reload Astra?"
+msgstr "导入 %d 个对象并重新加载 Astra 吗？"
+
+#: view/astra/config.js:99
+msgid "Imported %d object(s)"
+msgstr "已导入 %d 个对象"
+
+#: view/astra/config.js:118
+msgid "The top level must be an object"
+msgstr "顶层必须是一个对象"
+
+#: view/astra/config.js:121 view/astra/streams.js:490
+msgid "Invalid JSON: %s"
+msgstr "无效的 JSON：%s"
+
+#: view/astra/config.js:125
+msgid "Replace the whole configuration and reload Astra?"
+msgstr "替换整个配置并重新加载 Astra 吗？"
+
+#: view/astra/config.js:129
+msgid "Configuration applied"
+msgstr "配置已应用"
+
+#: menu.d view/astra/config.js:139
+msgid "Configuration"
+msgstr "配置"
+
+#: view/astra/config.js:140
+msgid "Astra is not reachable; the configuration cannot be loaded."
+msgstr "Astra 无法访问，无法加载配置。"
+
+#: view/astra/config.js:143
+msgid "Export"
+msgstr "导出"
+
+#: view/astra/config.js:144
+msgid "Download the current configuration. It contains the password hashes of panel users."
+msgstr "下载当前配置。其中包含面板用户的密码哈希。"
+
+#: view/astra/config.js:147
+msgid "Download"
+msgstr "下载"
+
+#: view/astra/config.js:151 view/astra/config.js:154
+msgid "Import"
+msgstr "导入"
+
+#: view/astra/config.js:152
+msgid "Imports channels and adapters from an Astra script or a JSON export and adds them to the current configuration."
+msgstr "从 Astra 脚本或 JSON 导出文件导入频道和适配器，并加入当前配置。"
+
+#: view/astra/config.js:158
+msgid "Edit as JSON"
+msgstr "以 JSON 编辑"
+
+#: view/astra/config.js:159
+msgid "Direct access to everything, including features without a form (CAS, SoftCAM, categories, users). A mistake here can stop Astra from starting."
+msgstr "可直接修改所有内容，包括没有表单的功能（CAS、SoftCAM、分类、用户）。这里的错误可能导致 Astra 无法启动。"
+
+#: view/astra/config.js:161
+msgid "Reload"
+msgstr "重新加载"
+
+#: view/astra/config.js:163 view/astra/settings.js:109 view/astra/settings.js:58
+msgid "Apply"
+msgstr "应用"
+
+#: menu.d view/astra/log.js:86
+msgid "Log"
+msgstr "日志"
+
+#: view/astra/log.js:88
+msgid "Info"
+msgstr "信息"
+
+#: view/astra/log.js:88
+msgid "Debug"
+msgstr "调试"
+
+#: view/astra/log.js:89
+msgid "Pause"
+msgstr "暂停"
+
+#: view/astra/log.js:90
+msgid "Clear"
+msgstr "清除"
+
+#: menu.d view/astra/overview.js:64
 msgid "Astra"
 msgstr "Astra"
 
-msgid "Astra DVB/IPTV streaming panel. Channels, adapters and users are managed in the panel's own web interface; this page only controls the service."
-msgstr "Astra DVB/IPTV 流媒体面板。频道、适配器和用户请在面板自带的 Web 界面中管理，本页面仅控制服务。"
+#: menu.d view/astra/overview.js:67 view/astra/streams.js:361
+msgid "Streams"
+msgstr "流"
 
-msgid "Collecting data…"
-msgstr "收集数据中…"
-
-msgid "Enable"
-msgstr "启用"
-
-msgid "Listening port of the Astra web interface."
-msgstr "Astra Web 界面的监听端口。"
-
-msgid "NOT RUNNING"
+#: view/astra/overview.js:81
+msgid "not running"
 msgstr "未运行"
 
-msgid "Open Web Interface"
-msgstr "打开 Web 界面"
+#: view/astra/overview.js:83
+msgid "disconnected"
+msgstr "已断开"
 
-msgid "RUNNING"
+#: view/astra/overview.js:85
+msgid "stale (%ds)"
+msgstr "已过期（%d 秒）"
+
+#: view/astra/overview.js:87
+msgid "connected"
+msgstr "已连接"
+
+#: view/astra/overview.js:104
+msgid "Start"
+msgstr "启动"
+
+#: view/astra/overview.js:104
+msgid "Stop"
+msgstr "停止"
+
+#: view/astra/overview.js:108 view/astra/settings.js:141
+msgid "Service"
+msgstr "服务"
+
+#: view/astra/overview.js:108
+msgid "running"
 msgstr "运行中"
 
-msgid "The DVB frontend is exclusive: disable this before using TVHeadend or MuMuDVB on the same adapter."
-msgstr "DVB 前端是独占的：在同一适配器上使用 TVHeadend 或 MuMuDVB 前请先关闭此项。"
+#: view/astra/overview.js:108
+msgid "stopped"
+msgstr "已停止"
 
-msgid "Web port"
-msgstr "Web 端口"
+#: view/astra/overview.js:109
+msgid "PID %d"
+msgstr "PID %d"
+
+#: view/astra/overview.js:110
+msgid "Version"
+msgstr "版本"
+
+#: view/astra/overview.js:111
+msgid "Control API"
+msgstr "控制接口"
+
+#: view/astra/overview.js:111
+msgid "ok"
+msgstr "正常"
+
+#: view/astra/overview.js:112
+msgid "port %d"
+msgstr "端口 %d"
+
+#: view/astra/overview.js:113
+msgid "Event monitor"
+msgstr "事件监控"
+
+#: view/astra/overview.js:137
+msgid "The configuration cannot be read (is Astra running?)."
+msgstr "无法读取配置（Astra 是否在运行？）。"
+
+#: view/astra/overview.js:142
+msgid "No adapters configured yet. Add one under “Adapters”."
+msgstr "尚未配置适配器。请在“适配器”页面添加。"
+
+#: view/astra/overview.js:158
+msgid "Adapter %d / device %d"
+msgstr "适配器 %d / 设备 %d"
+
+#: view/astra/overview.js:166 view/astra/overview.js:266 view/astra/streams.js:424
+msgid "disabled"
+msgstr "已禁用"
+
+#: view/astra/overview.js:181
+msgid "The DVB driver is loaded but no frontend device exists. Is the tuner connected?"
+msgstr "DVB 驱动已加载，但没有前端设备。调谐器是否已连接？"
+
+#: view/astra/overview.js:182
+msgid "No DVB driver is loaded (no /dev/dvb devices)."
+msgstr "未加载 DVB 驱动（没有 /dev/dvb 设备）。"
+
+#: view/astra/overview.js:190
+msgid "Detected tuners"
+msgstr "检测到的调谐器"
+
+#: view/astra/overview.js:194
+msgid "Used by Astra"
+msgstr "Astra 使用中"
+
+#: view/astra/overview.js:194
+msgid "Configured"
+msgstr "已配置"
+
+#: view/astra/overview.js:215 view/astra/streams.js:407
+msgid "No streams configured yet."
+msgstr "尚未配置流。"
+
+#: view/astra/overview.js:220 view/astra/streams.js:381
+msgid "State"
+msgstr "状态"
+
+#: view/astra/overview.js:220 view/astra/streams.js:381 view/astra/streams.js:532
+msgid "Inputs"
+msgstr "输入"
+
+#: view/astra/overview.js:263 view/astra/streams.js:422
+msgid "offline"
+msgstr "离线"
+
+#: view/astra/overview.js:270 view/astra/streams.js:425
+msgid "on air"
+msgstr "播出中"
+
+#: view/astra/overview.js:274
+msgid "scrambled"
+msgstr "已加扰"
+
+#: menu.d view/astra/sessions.js:40
+msgid "Sessions"
+msgstr "会话"
+
+#: view/astra/sessions.js:41
+msgid "Clients currently watching a stream over HTTP."
+msgstr "当前正在通过 HTTP 观看流的客户端。"
+
+#: view/astra/sessions.js:46
+msgid "Session tracking is switched off in the Astra settings, so this list stays empty."
+msgstr "会话统计已在 Astra 设置中关闭，因此此列表始终为空。"
+
+#: view/astra/sessions.js:57
+msgid "No active sessions."
+msgstr "当前没有会话。"
+
+#: view/astra/sessions.js:62
+msgid "Stream"
+msgstr "流"
+
+#: view/astra/sessions.js:62 view/astra/streams.js:111 view/astra/streams.js:126
+msgid "Address"
+msgstr "地址"
+
+#: view/astra/sessions.js:62
+msgid "User"
+msgstr "用户"
+
+#: view/astra/sessions.js:62
+msgid "Uptime"
+msgstr "在线时长"
+
+#: view/astra/sessions.js:80
+msgid "Disconnect"
+msgstr "断开"
+
+#: view/astra/sessions.js:83
+msgid "%d session(s)"
+msgstr "%d 个会话"
+
+#: view/astra/settings.js:37
+msgid "Monitoring URL"
+msgstr "监控 URL"
+
+#: view/astra/settings.js:38
+msgid "Export telemetry and events to this external server. Leave empty to keep everything local."
+msgstr "把遥测数据和事件导出到此外部服务器。留空则所有数据都只保留在本地。"
+
+#: view/astra/settings.js:39
+msgid "Track HTTP sessions"
+msgstr "统计 HTTP 会话"
+
+#: view/astra/settings.js:40
+msgid "Start streams on demand"
+msgstr "按需启动流"
+
+#: view/astra/settings.js:41
+msgid "HTTP keep active (s)"
+msgstr "HTTP 保持活动（秒）"
+
+#: view/astra/settings.js:42
+msgid "Delay before a stream stops when nobody is connected. Default: 0 (stop immediately)"
+msgstr "没有客户端连接时，流停止前的延迟。默认：0（立即停止）"
+
+#: view/astra/settings.js:44
+msgid "Backup start delay (s)"
+msgstr "备用启动延迟（秒）"
+
+#: view/astra/settings.js:44
+msgid "Delay before starting the next input. Default: 0"
+msgstr "启动下一个输入前的延迟。默认：0"
+
+#: view/astra/settings.js:45
+msgid "Backup return delay (s)"
+msgstr "备用返回延迟（秒）"
+
+#: view/astra/settings.js:45
+msgid "Delay before returning to the previous input. Default: 0"
+msgstr "返回上一个输入前的延迟。默认：0"
+
+#: view/astra/settings.js:46
+msgid "HTTP output buffer (KB)"
+msgstr "HTTP 输出缓冲区（KB）"
+
+#: view/astra/settings.js:46
+msgid "Per-client buffer. Default: 1024"
+msgstr "每个客户端的缓冲区。默认：1024"
+
+#: view/astra/settings.js:47
+msgid "TCP congestion control"
+msgstr "TCP 拥塞控制"
+
+#: view/astra/settings.js:48
+msgid "CC limit"
+msgstr "CC 限制"
+
+#: view/astra/settings.js:48
+msgid "Default: 0 (not limited)"
+msgstr "默认：0（不限制）"
+
+#: view/astra/settings.js:56
+msgid "Astra settings"
+msgstr "Astra 设置"
+
+#: view/astra/settings.js:79
+msgid "Settings saved"
+msgstr "设置已保存"
+
+#: view/astra/settings.js:88
+msgid "Segment duration (s)"
+msgstr "分片时长（秒）"
+
+#: view/astra/settings.js:88
+msgid "Default: 10"
+msgstr "默认：10"
+
+#: view/astra/settings.js:89
+msgid "Segment count"
+msgstr "分片数量"
+
+#: view/astra/settings.js:89
+msgid "Default: 3"
+msgstr "默认：3"
+
+#: view/astra/settings.js:90
+msgid "Segment naming"
+msgstr "分片命名"
+
+#: view/astra/settings.js:90
+msgid "Default: PCR hash"
+msgstr "默认：PCR 哈希"
+
+#: view/astra/settings.js:90
+msgid "Sequence"
+msgstr "序号"
+
+#: view/astra/settings.js:91
+msgid "Round duration value"
+msgstr "时长取整"
+
+#: view/astra/settings.js:92
+msgid "Use Expires header"
+msgstr "使用 Expires 头"
+
+#: view/astra/settings.js:93
+msgid "Default headers for .m3u8"
+msgstr "使用 .m3u8 的默认头"
+
+#: view/astra/settings.js:94
+msgid ".m3u8 headers"
+msgstr ".m3u8 头"
+
+#: view/astra/settings.js:94 view/astra/settings.js:97
+msgid "One header per line"
+msgstr "每行一个头"
+
+#: view/astra/settings.js:96
+msgid "Default headers for .ts"
+msgstr "使用 .ts 的默认头"
+
+#: view/astra/settings.js:97
+msgid ".ts headers"
+msgstr ".ts 头"
+
+#: view/astra/settings.js:107
+msgid "HTTP Live Streaming (HLS)"
+msgstr "HTTP Live Streaming（HLS）"
+
+#: view/astra/settings.js:132
+msgid "HLS settings saved"
+msgstr "HLS 设置已保存"
+
+#: view/astra/settings.js:140
+msgid "Astra – Settings"
+msgstr "Astra – 设置"
+
+#: view/astra/settings.js:144
+msgid "Start at boot"
+msgstr "开机自启"
+
+#: view/astra/settings.js:145
+msgid "A DVB frontend can only be used by one program at a time. Switch this off before using TVHeadend or MuMuDVB."
+msgstr "同一时间只有一个程序能使用 DVB 前端。使用 TVHeadend 或 MuMuDVB 之前请先关闭此项。"
+
+#: view/astra/settings.js:149
+msgid "Control port"
+msgstr "控制端口"
+
+#: view/astra/settings.js:150
+msgid "Port of the local control interface used by this page. It requires authentication but listens on all interfaces; restrict it with the firewall if the router is reachable from untrusted networks."
+msgstr "本页面使用的本地控制接口端口。它需要认证，但会监听所有网络接口；如果路由器可能被不受信任的网络访问，请用防火墙加以限制。"
+
+#: view/astra/settings.js:162
+msgid "Astra is not reachable, so its own settings cannot be shown. Start the service first."
+msgstr "无法访问 Astra，因此无法显示它自身的设置。请先启动服务。"
+
+#: view/astra/streams.js:21
+msgid "Default: Latin (ISO 6937)"
+msgstr "默认：拉丁字符（ISO 6937）"
+
+#: view/astra/streams.js:47
+msgid "Program number"
+msgstr "节目号"
+
+#: view/astra/streams.js:50
+msgid "CAM / SoftCAM"
+msgstr "CAM / SoftCAM"
+
+#: view/astra/streams.js:51
+msgid "None"
+msgstr "无"
+
+#: view/astra/streams.js:51
+msgid "DVB-CI CAM"
+msgstr "DVB-CI CAM"
+
+#: view/astra/streams.js:54
+msgid "Default: use system routes"
+msgstr "默认：使用系统路由"
+
+#: view/astra/streams.js:65
+msgid "BISS key"
+msgstr "BISS 密钥"
+
+#: view/astra/streams.js:65
+msgid "16 hex digits"
+msgstr "16 位十六进制数"
+
+#: view/astra/streams.js:66
+msgid "Expected 16 hexadecimal digits"
+msgstr "应为 16 位十六进制数"
+
+#: view/astra/streams.js:70
+msgid "HTTP address"
+msgstr "HTTP 地址"
+
+#: view/astra/streams.js:71
+msgid "Default: Astra"
+msgstr "默认：Astra"
+
+#: view/astra/streams.js:72
+msgid "Buffer time"
+msgstr "缓冲时间"
+
+#: view/astra/streams.js:72
+msgid "Seconds. Default: 2"
+msgstr "秒。默认：2"
+
+#: view/astra/streams.js:73
+msgid "Seconds. Default: 10"
+msgstr "秒。默认：10"
+
+#: view/astra/streams.js:74
+msgid "Use SCTP instead of TCP"
+msgstr "使用 SCTP 代替 TCP"
+
+#: view/astra/streams.js:101 view/astra/streams.js:110 view/astra/streams.js:79
+msgid "Local interface"
+msgstr "本地接口"
+
+#: view/astra/streams.js:80
+msgid "Source address, e.g. 239.1.1.1"
+msgstr "源地址，例如 239.1.1.1"
+
+#: view/astra/streams.js:103 view/astra/streams.js:112 view/astra/streams.js:81
+msgid "Port"
+msgstr "端口"
+
+#: view/astra/streams.js:112 view/astra/streams.js:81
+msgid "Default: 1234"
+msgstr "默认：1234"
+
+#: view/astra/streams.js:82
+msgid "Renew"
+msgstr "续订"
+
+#: view/astra/streams.js:82
+msgid "Refresh multicast group membership"
+msgstr "刷新组播组成员关系"
+
+#: view/astra/streams.js:83
+msgid "Socket size"
+msgstr "套接字大小"
+
+#: view/astra/streams.js:87
+msgid "RTSP address"
+msgstr "RTSP 地址"
+
+#: view/astra/streams.js:88
+msgid "Interleaved mode (data over TCP)"
+msgstr "交错模式（数据通过 TCP 传输）"
+
+#: view/astra/streams.js:128 view/astra/streams.js:92
+msgid "File"
+msgstr "文件"
+
+#: view/astra/streams.js:128 view/astra/streams.js:92
+msgid "Full path to the MPEG-TS file"
+msgstr "MPEG-TS 文件的完整路径"
+
+#: view/astra/streams.js:93
+msgid "Repeat file"
+msgstr "循环播放文件"
+
+#: view/astra/streams.js:102
+msgid "Default: any interface"
+msgstr "默认：任意接口"
+
+#: view/astra/streams.js:104
+msgid "Path"
+msgstr "路径"
+
+#: view/astra/streams.js:104
+msgid "Unique path of the stream, starts with /"
+msgstr "流的唯一路径，以 / 开头"
+
+#: view/astra/streams.js:105
+msgid "Must start with /"
+msgstr "必须以 / 开头"
+
+#: view/astra/streams.js:111
+msgid "Destination address"
+msgstr "目标地址"
+
+#: view/astra/streams.js:119
+msgid "114..858 MHz in steps of 8"
+msgstr "114..858 MHz，步进 8"
+
+#: view/astra/streams.js:120
+msgid "Default: 64-QAM"
+msgstr "默认：64-QAM"
+
+#: view/astra/streams.js:122
+msgid "Symbol rate"
+msgstr "符号率"
+
+#: view/astra/streams.js:123
+msgid "Attenuator"
+msgstr "衰减器"
+
+#: view/astra/streams.js:236
+msgid "Input type"
+msgstr "输入类型"
+
+#: view/astra/streams.js:236
+msgid "Output type"
+msgstr "输出类型"
+
+#: view/astra/streams.js:241
+msgid "Close"
+msgstr "关闭"
+
+#: view/astra/streams.js:252
+msgid "The address is invalid"
+msgstr "地址无效"
+
+#: view/astra/streams.js:281
+msgid "Parameters"
+msgstr "参数"
+
+#: view/astra/streams.js:282
+msgid "Move up"
+msgstr "上移"
+
+#: view/astra/streams.js:283
+msgid "Move down"
+msgstr "下移"
+
+#: view/astra/streams.js:284
+msgid "Remove"
+msgstr "移除"
+
+#: view/astra/streams.js:303
+msgid "Add input"
+msgstr "添加输入"
+
+#: view/astra/streams.js:303
+msgid "Add output"
+msgstr "添加输出"
+
+#: view/astra/streams.js:362
+msgid "Each stream takes one or more inputs and publishes them on its outputs. Disabled inputs and outputs are kept but ignored."
+msgstr "每个流接收一个或多个输入，并通过它的输出发布。被禁用的输入和输出会保留但不会生效。"
+
+#: view/astra/streams.js:381 view/astra/streams.js:533
+msgid "Outputs"
+msgstr "输出"
+
+#: view/astra/streams.js:409 view/astra/streams.js:530
+msgid "Add stream"
+msgstr "添加流"
+
+#: view/astra/streams.js:451
+msgid "Single program stream"
+msgstr "单节目流"
+
+#: view/astra/streams.js:452
+msgid "Start stream on demand"
+msgstr "按需启动流"
+
+#: view/astra/streams.js:453
+msgid "Keep active (s)"
+msgstr "保持活动（秒）"
+
+#: view/astra/streams.js:454
+msgid "Delay before stopping when nobody is connected. Default: 0"
+msgstr "没有客户端连接时，停止前的延迟。默认：0"
+
+#: view/astra/streams.js:459
+msgid "Service type"
+msgstr "服务类型"
+
+#: view/astra/streams.js:460
+msgid "Default: original service type"
+msgstr "默认：保持原服务类型"
+
+#: view/astra/streams.js:460
+msgid "Video"
+msgstr "视频"
+
+#: view/astra/streams.js:460
+msgid "Radio"
+msgstr "广播"
+
+#: view/astra/streams.js:460
+msgid "Teletext"
+msgstr "图文电视"
+
+#: view/astra/streams.js:461
+msgid "Service provider"
+msgstr "服务提供商"
+
+#: view/astra/streams.js:462
+msgid "Service name"
+msgstr "服务名称"
+
+#: view/astra/streams.js:463
+msgid "Codepage"
+msgstr "字符集"
+
+#: view/astra/streams.js:464
+msgid "HbbTV URL"
+msgstr "HbbTV URL"
+
+#: view/astra/streams.js:526
+msgid "Stream \"%s\" saved"
+msgstr "流“%s”已保存"
+
+#: view/astra/streams.js:530
+msgid "Edit stream"
+msgstr "编辑流"
+
+#: view/astra/streams.js:534
+msgid "Service information (SDT)"
+msgstr "服务信息（SDT）"
+
+#: view/astra/streams.js:536
+msgid "Advanced (JSON)"
+msgstr "高级（JSON）"
+
+#: view/astra/streams.js:537
+msgid "All other stream properties (groups, PID maps, CAS, MPTS configuration, …)."
+msgstr "其它所有流属性（分组、PID 映射、CAS、MPTS 配置……）。"
+
+#: view/astra/streams.js:550
+msgid "Stream \"%s\" restarted"
+msgstr "流“%s”已重启"
+
+#: view/astra/streams.js:557
+msgid "Delete stream \"%s\"?"
+msgstr "删除流“%s”吗？"
+
+#: menu.d
+msgid "Overview"
+msgstr "概览"
+
+#: menu.d
+msgid "Settings"
+msgstr "设置"
+
+#: view/astra/streams.js
+msgid "waiting for data"
+msgstr "等待数据"
+
+#: view/astra/streams.js
+msgid "Adapter %s reports a lock but carries no data, so the streams stay idle. Check the antenna, the power feed and the tuned frequency."
+msgstr "适配器 %s 报告已锁定但没有数据，流无法开始。请检查天线、馈电和调谐频点。"
+

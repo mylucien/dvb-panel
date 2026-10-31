@@ -1,13 +1,20 @@
 {
 	"luci-app-astra": {
-		"description": "Grant access to Astra service control",
+		"description": "Grant access to Astra management",
 		"read": {
 			"ubus": {
-				"service": [ "list" ]
+				"luci.astra": [ "getStatus", "getState", "getDvbList", "query" ],
+				"luci": [ "getInitList" ]
 			},
 			"uci": [ "astra" ]
 		},
 		"write": {
+			"ubus": {
+				"luci.astra": [ "control" ]
+			},
+			"file": {
+				"/etc/init.d/astra": [ "exec" ]
+			},
 			"uci": [ "astra" ]
 		}
 	}

@@ -1,0 +1,5 @@
+#!/bin/sh
+# The event monitor is started together with the service: restart it once so a
+# freshly installed LuCI app picks the monitor up without a reboot.
+[ -x /etc/init.d/astra ] && /etc/init.d/astra running && /etc/init.d/astra restart >/dev/null 2>&1
+exit 0

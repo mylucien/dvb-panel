@@ -1,0 +1,193 @@
+#!/usr/bin/ucode
+// SPDX-License-Identifier: Apache-2.0
+//
+// astra-monitor: keeps one authenticated WebSocket open to astra's
+// /control/event/ and writes the latest adapter / stream state plus a log
+// ring to /var/run/astra/state.json. LuCI reads that file (cheap) instead of
+// holding a connection per browser tab.
+//
+// Test overrides:  monitor --port N --key FILE --state FILE
+
+'use strict';
+
+import { mkdir } from 'fs';
+import { cursor } from 'uci';
+import { read_key, control, write_json, now_ms, STATE_DIR, STATE_FILE, KEY_FILE, DEFAULT_PORT } from 'astra.api';
+import { ws_connect, ws_poll, ws_close } from 'astra.ws';
+
+const LOG_KEEP    = 300;	/* log lines kept in the ring */
+const STALE_AFTER = 300;	/* seconds without events before an entry is dropped */
+const FLUSH_MS    = 1000;	/* min. interval between writes when data changed */
+const BEAT_MS     = 4000;	/* write at least this often (liveness for the UI) */
+
+let opt = { port: null, key: KEY_FILE, state: STATE_FILE };
+
+for (let i = 0; i < length(ARGV); i++) {
+	switch (ARGV[i]) {
+	case '--port':  opt.port = +ARGV[++i]; break;
+	case '--key':   opt.key = ARGV[++i]; break;
+	case '--state': opt.state = ARGV[++i]; break;
+	}
+}
+
+function get_port() {
+	if (opt.port)
+		return opt.port;
+
+	let p = +(cursor().get('astra', 'main', 'port') ?? DEFAULT_PORT);
+
+	return (p > 0 && p < 65536) ? p : DEFAULT_PORT;
+}
+
+let st = {
+	ts: 0, connected: false, error: null, since: 0,
+	adapters: {}, streams: {}, log: [], seq: 0
+};
+
+let dirty = true;
+
+function flush() {
+	st.ts = time();
+	/* 0600: the ring may contain stream URLs with credentials */
+	write_json(opt.state, st, 0600);
+	dirty = false;
+}
+
+function add_log(l) {
+	if (type(l) != 'object')
+		return;
+
+	push(st.log, { seq: ++st.seq, time: l.time, type: l.type, id: l.id, text: l.text });
+
+	if (length(st.log) > LOG_KEEP)
+		splice(st.log, 0, length(st.log) - LOG_KEEP);
+
+	dirty = true;
+}
+
+function strip(ev) {
+	let o = {};
+
+	for (let k, v in ev)
+		if (k != 'scope')
+			o[k] = v;
+
+	o.ts = time();
+
+	return o;
+}
+
+function handle(text) {
+	let ev;
+
+	try {
+		ev = json(text);
+	}
+	catch (e) {
+		return;
+	}
+
+	if (type(ev) != 'object')
+		return;
+
+	switch (ev.scope) {
+	case 'adapter_event':
+		if (ev.dvb_id != null) {
+			st.adapters[ev.dvb_id] = strip(ev);
+			dirty = true;
+		}
+		break;
+
+	case 'stream_event':
+		if (ev.channel_id != null) {
+			let s = (st.streams[ev.channel_id] ??= { input: {} });
+
+			if (ev.input_id != null)
+				s.input['' + ev.input_id] = strip(ev);
+			else
+				s.total = strip(ev);
+
+			dirty = true;
+		}
+		break;
+
+	case 'log_event':
+		for (let l in (ev.log ?? []))
+			add_log(l);
+		break;
+	}
+}
+
+function expire() {
+	let limit = time() - STALE_AFTER;
+
+	for (let id, a in st.adapters)
+		if (a.ts < limit)
+			delete st.adapters[id];
+
+	for (let id, s in st.streams) {
+		for (let n, i in s.input)
+			if (i.ts < limit)
+				delete s.input[n];
+
+		if (s.total && s.total.ts < limit)
+			delete s.total;
+
+		if (!s.total && !length(keys(s.input)))
+			delete st.streams[id];
+	}
+}
+
+/* history for a freshly started monitor (events only carry new lines) */
+function backfill(port, key) {
+	let r = control(port, 'log', null, key, 2000);
+
+	if (r.ok && type(r.data) == 'object' && type(r.data.log) == 'array') {
+		st.log = [];
+
+		for (let l in r.data.log)
+			add_log(l);
+	}
+}
+
+mkdir(STATE_DIR, 0755);
+
+for (;;) {
+	let port = get_port(), key = read_key(opt.key);
+	let ws = key ? ws_connect(port, key) : { error: 'no api key' };
+
+	if (ws.error) {
+		st.connected = false;
+		st.error = ws.error;
+		flush();
+		sleep(3000);
+		continue;
+	}
+
+	st.connected = true;
+	st.error = null;
+	st.since = time();
+	backfill(port, key);
+	flush();
+
+	let last = now_ms();
+
+	while (!ws.closed) {
+		for (let m in ws_poll(ws, 1000))
+			handle(m);
+
+		let t = now_ms();
+
+		if ((dirty && t - last >= FLUSH_MS) || t - last >= BEAT_MS) {
+			expire();
+			flush();
+			last = t;
+		}
+	}
+
+	ws_close(ws);
+	st.connected = false;
+	st.error = 'connection lost';
+	flush();
+	sleep(2000);
+}

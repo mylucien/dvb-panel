@@ -1,1 +1,1 @@
-{"log":[],"gid":1,"mpts":[],"dvb_tune":[{"type":"T","id":"dtmb0","device":0,"name":"DTMB-674","bandwidth":"8MHz","enable":true,"adapter":0,"frequency":674}],"users":{"admin":{"type":1,"enable":true,"created":1792770969,"cipher":"3fed7a346e430ea4c2aa10250928f4de"}},"make_stream":[],"softcam":[],"channel":[],"options":[],"input":[],"output":[]}
+{"log":[],"gid":1,"mpts":[],"dvb_tune":[],"users":{},"make_stream":[],"softcam":[],"channel":[],"options":[],"input":[],"output":[]}

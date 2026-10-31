@@ -1,0 +1,162 @@
+#!/usr/bin/ucode
+// SPDX-License-Identifier: Apache-2.0
+//
+// astra-provision: prepare astra's control-API credentials before every start.
+//
+//  * /etc/astra/api.key   "luci:<random>"  (root only) -- used by luci-app-astra
+//  * /etc/astra/astra.json  users.luci     (cipher computed by astra itself,
+//                                          make_cipher() is not reproducible
+//                                          outside of the binary)
+//  * the factory account admin/admin is removed if it is still untouched
+//
+// Idempotent; takes ~1 s because astra is started once to compute the cipher.
+//
+// Test overrides:  provision --conf FILE --key FILE --astra EXE
+
+'use strict';
+
+import { readfile, writefile, rename, chmod, open, popen, access, unlink, mkdir } from 'fs';
+
+const DEFAULT_ADMIN_CIPHER = '3fed7a346e430ea4c2aa10250928f4de';	/* make_cipher("admin","admin") */
+const API_USER = 'luci';
+
+let opt = {
+	conf:  '/etc/astra/astra.json',
+	key:   '/etc/astra/api.key',
+	astra: null
+};
+
+for (let i = 0; i < length(ARGV); i++) {
+	switch (ARGV[i]) {
+	case '--conf':  opt.conf = ARGV[++i]; break;
+	case '--key':   opt.key = ARGV[++i]; break;
+	case '--astra': opt.astra = ARGV[++i]; break;
+	}
+}
+
+function die(msg) {
+	warn('astra-provision: ' + msg + '\n');
+	exit(1);
+}
+
+function random_hex(n) {
+	let f = open('/dev/urandom', 'r');
+	let r = f ? f.read(n) : null;
+
+	if (f)
+		f.close();
+
+	if (length(r) != n)
+		die('cannot read /dev/urandom');
+
+	let h = '';
+
+	for (let i = 0; i < n; i++)
+		h += sprintf('%02x', ord(r, i));
+
+	return h;
+}
+
+function write_private(path, data) {
+	let tmp = path + '.tmp';
+	let f = open(tmp, 'w', 0600);
+
+	if (!f)
+		die('cannot write ' + tmp);
+
+	f.write(data);
+	f.close();
+	chmod(tmp, 0600);
+
+	if (!rename(tmp, path)) {
+		unlink(tmp);
+		die('cannot replace ' + path);
+	}
+}
+
+/* 1. API password ------------------------------------------------------- */
+let pass;
+let cur = trim(readfile(opt.key) ?? '');
+let m = match(cur, /^luci:([0-9a-f]{16,})$/);
+
+if (m) {
+	pass = m[1];
+	chmod(opt.key, 0600);
+}
+else {
+	pass = random_hex(12);
+	write_private(opt.key, API_USER + ':' + pass + '\n');
+	warn('astra-provision: generated a new API key\n');
+}
+
+/* 2. current configuration --------------------------------------------- */
+let conf = null, raw = readfile(opt.conf);
+
+if (raw != null) {
+	try {
+		conf = json(raw);
+	}
+	catch (e) {
+		die(opt.conf + ' is not valid JSON, refusing to touch it');
+	}
+}
+
+conf ??= { log: [], gid: 1, mpts: [], dvb_tune: [], users: {}, make_stream: [],
+	softcam: [], channel: [], options: [], input: [], output: [] };
+
+if (type(conf) != 'object')
+	die(opt.conf + ' has an unexpected structure');
+
+let users = (type(conf.users) == 'object') ? conf.users : {};
+
+/* 3. cipher, computed by astra itself ---------------------------------- */
+let lua = '/tmp/astra-cipher.' + random_hex(4) + '.lua';
+let cfg = lua + '.json';
+
+writefile(lua,
+	'setmetatable(log, { __index = function() return function() end end, __call = function() end })\n' +
+	'print("CIPHER=" .. make_cipher("' + API_USER + '", "' + pass + '"))\n' +
+	'astra.exit()\n');
+writefile(cfg, '{"log":[],"gid":1,"mpts":[],"dvb_tune":[],"users":{},"make_stream":[],"softcam":[],"channel":[],"options":[],"input":[],"output":[]}');
+
+let exe = opt.astra ?? '/usr/lib/astra/bin/astra';
+let runner = opt.astra
+	? exe + ' --stream ' + lua + ' -c ' + cfg
+	: 'unset LD_PRELOAD; LD_LIBRARY_PATH=/usr/lib/astra/lib exec ' + exe + ' --stream ' + lua + ' -c ' + cfg;
+let tmo = (access('/usr/bin/timeout') || access('/bin/timeout')) ? 'timeout 20 ' : '';
+let p = popen(tmo + 'sh -c \'' + runner + '\' 2>/dev/null', 'r');
+let out = p ? p.read('all') : '';
+
+if (p)
+	p.close();
+
+unlink(lua);
+unlink(cfg);
+
+let cm = match(out ?? '', /CIPHER=([0-9a-f]{32})/);
+
+if (!cm)
+	die('astra did not return a cipher (is the runtime working?)');
+
+let cipher = cm[1];
+
+/* 4. update the users table -------------------------------------------- */
+let changed = false;
+
+if (users.admin && users.admin.cipher == DEFAULT_ADMIN_CIPHER) {
+	delete users.admin;
+	changed = true;
+	warn('astra-provision: removed the factory admin/admin account\n');
+}
+
+if (!users[API_USER] || users[API_USER].cipher != cipher || users[API_USER].enable !== true || users[API_USER].type != 1) {
+	users[API_USER] = { type: 1, enable: true, created: time(), cipher: cipher };
+	changed = true;
+}
+
+if (changed || conf.users !== users || raw == null) {
+	conf.users = users;
+	write_private(opt.conf, sprintf('%J', conf) + '\n');
+}
+
+exit(0);
