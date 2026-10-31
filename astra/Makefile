@@ -5,7 +5,7 @@ RSTRIP:=:
 
 PKG_NAME:=astra
 PKG_VERSION:=5.63
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 
 PKG_LICENSE:=Proprietary
 PKG_MAINTAINER:=mylucien
@@ -82,6 +82,10 @@ define Package/astra/install
 	$(LN) libcrypto.so.1.0.0 $(1)/usr/lib/astra/lib/libcrypto.so
 	$(LN) libdvbcsa.so.1.0.1 $(1)/usr/lib/astra/lib/libdvbcsa.so.1
 	$(LN) libdvbcsa.so.1.0.1 $(1)/usr/lib/astra/lib/libdvbcsa.so
+
+	# http_static 启动时要 stat 到 /vendor/static（二进制里写死的静态根），内容为空即可
+	$(INSTALL_DIR) $(1)/vendor/static
+	$(INSTALL_DATA) ./files/vendor-static.keep $(1)/vendor/static/.keep
 
 	# 配置与服务
 	$(INSTALL_DIR) $(1)/etc/astra

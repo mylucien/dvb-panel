@@ -1,0 +1,1 @@
+astra 的 http_static 模块启动时必须 stat 到 /vendor/static，内容可以为空。

@@ -17,6 +17,9 @@ export LD_LIBRARY_PATH=/usr/lib/astra/lib
 	exit 1
 }
 
+# http_static 要求静态根存在，正常情况下由包安装
+[ -d /vendor/static ] || mkdir -p /vendor/static
+
 cd /tmp || exit 1
 exec /usr/lib/astra/bin/astra --stream /etc/astra/panel.lua \
 	-c /etc/astra/astra.json -p "${1:-8000}"
